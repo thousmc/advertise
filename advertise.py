@@ -2,51 +2,32 @@
 # made with lots of help from Captainjamason
 # started on december 31 2024
 
+from pathlib import Path
 import subprocess
-import json
-import requests
-import os
 import time
 
-HOME = os.environ['HOME']
-LOCALSHARE = f'{HOME}/.local/share'
+CURRENT_TIME = time.strftime('%Y-%m-%d-%H-%M-%S')
 
 def is_invite():
     # sees if it should run invitation or map advertisement
     # 0 = invite
     # else (30) = map
-    now = time.strftime('%M')
-    if now == 0:
+    minute = time.strftime('%M')
+    if minute == 0:
         return True
     else:
         return False
 
-def paths_create():
-    if os.path.exists(LOCALSHARE):
-
-        perfect = f'{LOCALSHARE}/thousmc/advertise/grabcache'
-        perfect_list = perfect[1:].split('/')
-
-        i = 0
-        new = ''
-        while i < len(perfect_list):  # final file tree: $HOME/.local/share/thousmc/advertise/grabcache
-            old = new
-            new = new + '/' + perfect_list[i]
-            if perfect_list[i] in LOCALSHARE:
-                pass
-            else:
-                if os.path.exists(f'{new}'):
-                    print(f'"{perfect_list[i]}" already exists.')
-                else:
-                    os.makedirs(f'{new}', exist_ok=True)
-                    print(f'Created "{perfect_list[i]}" directory in "{old}"')
-            i = i + 1
-
+def paths_create(path):
+    path_expand = Path(path).expanduser()
+    if not Path(path_expand).exists():
+        Path(path_expand).mkdir(parents=True)
+        print(f'Created path: "{path_expand}"')
     else:
-        raise ValueError(f"{LOCALSHARE} doesn't exist")
+        print(f'"{path_expand}" already exists. Skipping creation...')
 
 if __name__ == '__main__':
-
     #subprocess.run(['curl', 'https://api.mcsrvstat.us/3/', ''])
     print(is_invite(), '\n')
-    paths_create()
+    paths_create(f'~/.local/share/thousmc/advertise/serverinfocache')
+    print(CURRENT_TIME)
