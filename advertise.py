@@ -1,7 +1,7 @@
 # made by thou for thousmc
 # made with lots of help from Captainjamason
-# this script works under the assumption that it runs every 30 minutes
 # started on december 31 2024
+# first working version completed on january 7 2025
 
 from pathlib import Path
 import requests
@@ -49,7 +49,6 @@ def advertisement():
     if random.random() < RANDOM_CHANCE:
         choice = random.randrange(0, len(secret_message_list))
         return 'tellraw @a [{"text":"' + secret_message_list[choice] + '","color":"gold"}]'
-
     # actual discord & map ad
     if is_invite() == True:
         is_invite_file.write_text('0')
