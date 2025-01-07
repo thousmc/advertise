@@ -4,11 +4,14 @@
 # started on december 31 2024
 
 from pathlib import Path
+import requests
+import json
 import subprocess
 import time
 import random
 
 CURRENT_TIME = time.strftime('%Y-%m-%d-%H-%M-%S')
+RANDOM_CHANCE = 0.04  # added for readability
 
 def paths_create(path):
     path_expand = Path(path).expanduser()
@@ -32,16 +35,16 @@ def is_invite():
         return choice
     return '1' in opened.read()
 
-
 def advertisement():
-
+    if are_players('play.thousmc.xyz') == False:
+        return 'No players online'
     # secret message functionality
     # small chance a non-discord, non-map message occurs
     secret_messages = open('secret_messages.txt')
     secret_message_list = []
     for message in secret_messages:
         secret_message_list.append(message.strip())
-    if random.random() < 0.04:
+    if random.random() < RANDOM_CHANCE:
         choice = random.randrange(0, len(secret_message_list))
         return 'tellraw @a [{"text":"' + secret_message_list[choice] + '","color":"gold"}]'
 
@@ -53,10 +56,22 @@ def advertisement():
         is_invite_file.write_text('1')
         return 'tellraw @a [{"text":"Check out the thousmc2 live interactive map! ","color":"gray"},{"text":"map.thousmc.xyz","color":"gold","underlined":true,"clickEvent":{"action":"open_url","value":"https://map.thousmc.xyz"},"hoverEvent":{"action":"show_text","contents":[{"text":"https://map.thousmc.xyz","color":"gray","italic":true}]}}]\' Enter'
         
-
-def is_online(url, save=False):
-    pass
+def are_players(url):
+    # thank you jamason
+    link = 'https://api.mcsrvstat.us/3/' + url
+    response = requests.get(link)
+    if response.status_code == 200:
+        data = json.loads(response.text)
+    else:
+        raise Exception(f"Error: {response.status_code}")
+    are_players_cache_path = paths_create('~/.local/share/thousmc/serverinfocache')
+    dump_file = f'{are_players_cache_path}/{url}-{CURRENT_TIME}.json'
+    with open(dump_file, 'w') as file:
+        json.dump(data, file, indent=4)
+    if data["online"] and data["players"]["online"] > 0:
+        return True
+    else:
+        return False
 
 if __name__ == '__main__':
-    paths_create('~/.local/share/thousmc/serverinfocache')
     print(advertisement())
