@@ -12,7 +12,7 @@ import random
 
 CURRENT_TIME = time.strftime('%Y-%m-%d-%H-%M-%S')
 RANDOM_CHANCE = 0.04  # added for readability
-
+SCRIPT_DIR = Path(__file__).resolve().parent
 MAP_AD = 'tellraw @a [{"text":"Check out the thousmc2 live interactive map! ","color":"gray"},{"text":"map.thousmc.xyz","color":"gold","underlined":true,"clickEvent":{"action":"open_url","value":"https://map.thousmc.xyz"},"hoverEvent":{"action":"show_text","contents":[{"text":"https://map.thousmc.xyz","color":"gray","italic":true}]}}]'
 INVITE_AD = 'tellraw @a [{"text":"Join the thousmc2 Discord server! ","color":"gray"},{"text":"discord.gg/xr6umCvj8J","color":"gold","underlined":true,"clickEvent":{"action":"open_url","value":"https://discord.gg/xr6umCvj8J"},"hoverEvent":{"action":"show_text","contents":[{"text":"https://discord.gg/xr6umCvj8J","color":"gray","italic":true}]}}]'
 
@@ -42,7 +42,7 @@ def advertisement():
         exit(1)
     # secret message functionality
     # small chance a non-discord, non-map message occurs
-    secret_messages = open('secret_messages.txt')
+    secret_messages = open(f'{SCRIPT_DIR}/secret_messages.txt')
     secret_message_list = []
     for message in secret_messages:
         secret_message_list.append(message.strip())
