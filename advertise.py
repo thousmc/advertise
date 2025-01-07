@@ -13,6 +13,9 @@ import random
 CURRENT_TIME = time.strftime('%Y-%m-%d-%H-%M-%S')
 RANDOM_CHANCE = 0.04  # added for readability
 
+MAP_AD = 'tellraw @a [{"text":"Check out the thousmc2 live interactive map! ","color":"gray"},{"text":"map.thousmc.xyz","color":"gold","underlined":true,"clickEvent":{"action":"open_url","value":"https://map.thousmc.xyz"},"hoverEvent":{"action":"show_text","contents":[{"text":"https://map.thousmc.xyz","color":"gray","italic":true}]}}]'
+INVITE_AD = 'tellraw @a [{"text":"Join the thousmc2 Discord server! ","color":"gray"},{"text":"discord.gg/xr6umCvj8J","color":"gold","underlined":true,"clickEvent":{"action":"open_url","value":"https://discord.gg/xr6umCvj8J"},"hoverEvent":{"action":"show_text","contents":[{"text":"https://discord.gg/xr6umCvj8J","color":"gray","italic":true}]}}]'
+
 def paths_create(path):
     path_expand = Path(path).expanduser()
     if not Path(path_expand).exists():
@@ -20,7 +23,6 @@ def paths_create(path):
         print(f'Created path: "{path_expand}"')
         return path_expand
     else:
-        print(f'"{path_expand}" already exists. Skipping creation...')
         return path_expand
 
 def is_invite():
@@ -36,8 +38,8 @@ def is_invite():
     return '1' in opened.read()
 
 def advertisement():
-    if are_players('play.thousmc.xyz') == False:
-        return 'No players online'
+    if are_players('play.thousmc.xyz', save=True) == False:
+        exit(1)
     # secret message functionality
     # small chance a non-discord, non-map message occurs
     secret_messages = open('secret_messages.txt')
@@ -51,12 +53,12 @@ def advertisement():
     # actual discord & map ad
     if is_invite() == True:
         is_invite_file.write_text('0')
-        return 'tellraw @a [{"text":"Join the thousmc2 Discord server! ","color":"gray"},{"text":"discord.gg/xr6umCvj8J","color":"gold","underlined":true,"clickEvent":{"action":"open_url","value":"https://discord.gg/xr6umCvj8J"},"hoverEvent":{"action":"show_text","contents":[{"text":"https://discord.gg/xr6umCvj8J","color":"gray","italic":true}]}}]\' Enter'
+        return INVITE_AD
     else:
         is_invite_file.write_text('1')
-        return 'tellraw @a [{"text":"Check out the thousmc2 live interactive map! ","color":"gray"},{"text":"map.thousmc.xyz","color":"gold","underlined":true,"clickEvent":{"action":"open_url","value":"https://map.thousmc.xyz"},"hoverEvent":{"action":"show_text","contents":[{"text":"https://map.thousmc.xyz","color":"gray","italic":true}]}}]\' Enter'
+        return MAP_AD
         
-def are_players(url):
+def are_players(url, save=False):
     # thank you jamason
     link = 'https://api.mcsrvstat.us/3/' + url
     response = requests.get(link)
@@ -65,13 +67,14 @@ def are_players(url):
     else:
         raise Exception(f"Error: {response.status_code}")
     are_players_cache_path = paths_create('~/.local/share/thousmc/serverinfocache')
-    dump_file = f'{are_players_cache_path}/{url}-{CURRENT_TIME}.json'
-    with open(dump_file, 'w') as file:
-        json.dump(data, file, indent=4)
-    if data["online"] and data["players"]["online"] > 0:
+    if save == True:
+        dump_filename = f'{are_players_cache_path}/{url}-{CURRENT_TIME}.json'
+        with open(dump_filename, 'w') as file:
+            json.dump(data, file, indent=4)
+    if data["online"] == True and data["players"]["online"] > 0:
         return True
     else:
         return False
 
 if __name__ == '__main__':
-    print(advertisement())
+    subprocess.run(['tmux', 'send-keys', '-t', '0', f'{advertisement()}', 'Enter'])
