@@ -40,7 +40,7 @@ def is_invite():
     return '1' in opened.read()
 
 def advertisement():
-    if not are_players('play.thousmc.xyz', save=True) == False:
+    if are_players('play.thousmc.xyz', save=True) == False:
         exit(1)
     # secret message functionality
     # small chance a non-discord, non-map message occurs
