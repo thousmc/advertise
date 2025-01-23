@@ -1,7 +1,9 @@
-# made by thou for thousmc
-# made with lots of help from Captainjamason
-# started on december 31 2024
-# first working version completed on january 7 2025
+'''
+made by thou for thousmc
+made with lots of help from Captainjamason
+started on december 31 2024
+first working version completed on january 7 2025
+'''
 
 from pathlib import Path
 import requests
@@ -11,7 +13,7 @@ import time
 import random
 
 CURRENT_TIME = time.strftime('%Y-%m-%d-%H-%M-%S')
-RANDOM_CHANCE = 0.04  # added for readability
+SECRET_MESSAGE_CHANCE = 0.04  # added for readability
 SCRIPT_DIR = Path(__file__).resolve().parent
 MAP_AD = 'tellraw @a [{"text":"Check out the thousmc2 live interactive map! ","color":"gray"},{"text":"map.thousmc.xyz","color":"gold","underlined":true,"clickEvent":{"action":"open_url","value":"https://map.thousmc.xyz"},"hoverEvent":{"action":"show_text","contents":[{"text":"https://map.thousmc.xyz","color":"gray","italic":true}]}}]'
 INVITE_AD = 'tellraw @a [{"text":"Join the thousmc2 Discord server! ","color":"gray"},{"text":"discord.gg/xr6umCvj8J","color":"gold","underlined":true,"clickEvent":{"action":"open_url","value":"https://discord.gg/xr6umCvj8J"},"hoverEvent":{"action":"show_text","contents":[{"text":"https://discord.gg/xr6umCvj8J","color":"gray","italic":true}]}}]'
@@ -38,7 +40,7 @@ def is_invite():
     return '1' in opened.read()
 
 def advertisement():
-    if are_players('play.thousmc.xyz', save=True) == False:
+    if not are_players('play.thousmc.xyz', save=True) == False:
         exit(1)
     # secret message functionality
     # small chance a non-discord, non-map message occurs
@@ -46,9 +48,8 @@ def advertisement():
     secret_message_list = []
     for message in secret_messages:
         secret_message_list.append(message.strip())
-    if random.random() < RANDOM_CHANCE:
-        choice = random.randrange(0, len(secret_message_list))
-        return 'tellraw @a [{"text":"' + secret_message_list[choice] + '","color":"gold"}]'
+    if random.random() < SECRET_MESSAGE_CHANCE:
+        return 'tellraw @a [{"text":"' + random.choice(secret_message_list) + '","color":"gold"}]'
     # actual discord & map ad
     if is_invite() == True:
         is_invite_file.write_text('0')
