@@ -11,6 +11,8 @@ import json
 import subprocess
 import time
 import random
+import argparse
+import sys
 
 CURRENT_TIME = time.strftime('%Y-%m-%d-%H-%M-%S')
 SECRET_MESSAGE_CHANCE = 0.04  # added for readability
@@ -77,4 +79,20 @@ def are_players(url, save=False):
         return False
 
 if __name__ == '__main__':
-    subprocess.run(['tmux', 'send-keys', '-t', '0', f'{advertisement()}', 'Enter'])
+    if len(sys.argv) == 1:
+        subprocess.run(['tmux', 'send-keys', '-t', '0', f'{advertisement()}', 'Enter'])
+        exit(0)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-a', '--areplayers', type=str, help='Return "True" if players are on the specified Minecraft server')
+    parser.add_argument('-s', '--save', action='store_true', help='Optional flag to save the .json parsed by "-a"/"--areplayers"')
+
+    args = parser.parse_args()
+    if args.save and not args.areplayers:
+        parser.error('The "--save" option requires the "-a"/"--areplayers" argument.')
+
+    if args.areplayers:
+        if args.save:
+            print(are_players(args.areplayers, save=True))
+        else:
+            print(are_players(args.areplayers))
