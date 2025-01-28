@@ -5,6 +5,8 @@ started on december 31 2024
 first working version completed on january 7 2025
 '''
 
+#!/usr/bin/env python3
+
 from pathlib import Path
 import requests
 import json
