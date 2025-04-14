@@ -32,7 +32,7 @@ def paths_create(path):
         return path_expand
 
 def is_invite():
-    is_invite_path = paths_create('~/.local/share/thousmc/advertise')
+    is_invite_path = paths_create('~/.local/state/thousmc/advertise')
     global is_invite_file  # maybe i shouldnt do this
     is_invite_file = is_invite_path / 'is_invite.txt'
     opened = is_invite_file.open() if (is_invite_file.is_file()) else None
@@ -70,7 +70,7 @@ def are_players(url, save=False):
         data = json.loads(response.text)
     else:
         raise Exception(f"Error: {response.status_code}")
-    are_players_cache_path = paths_create('~/.local/share/thousmc/serverinfocache')
+    are_players_cache_path = paths_create('~/.local/state/thousmc/serverinfocache')
     if save == True:
         dump_filename = f'{are_players_cache_path}/{url}-{CURRENT_TIME}.json'
         with open(dump_filename, 'w') as file:
