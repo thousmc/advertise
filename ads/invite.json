@@ -1,17 +1,17 @@
 [
   {
-    "text": "Join the thousmc2 Discord server! ",
+    "text": "Join the thousmc Discord server! ",
     "color": "gray"
   },
   {
     "text": "discord.gg/xr6umCvj8J",
     "color": "gold",
     "underlined": true,
-    "clickEvent": {
+    "click_event": {
       "action": "open_url",
-      "value": "https://discord.gg/xr6umCvj8J"
+      "url": "https://discord.gg/xr6umCvj8J"
     },
-    "hoverEvent": {
+    "hover_event": {
       "action": "show_text",
       "contents": [
         {
