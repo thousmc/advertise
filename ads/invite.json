@@ -1,0 +1,25 @@
+[
+  {
+    "text": "Join the thousmc2 Discord server! ",
+    "color": "gray"
+  },
+  {
+    "text": "discord.gg/xr6umCvj8J",
+    "color": "gold",
+    "underlined": true,
+    "clickEvent": {
+      "action": "open_url",
+      "value": "https://discord.gg/xr6umCvj8J"
+    },
+    "hoverEvent": {
+      "action": "show_text",
+      "contents": [
+        {
+          "text": "https://discord.gg/xr6umCvj8J",
+          "color": "gray",
+          "italic": true
+        }
+      ]
+    }
+  }
+]

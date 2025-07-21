@@ -19,8 +19,18 @@ import sys
 CURRENT_TIME = time.strftime('%Y-%m-%d-%H-%M-%S')
 SECRET_MESSAGE_CHANCE = 0.04  # added for readability
 SCRIPT_DIR = Path(__file__).resolve().parent
-MAP_AD = 'tellraw @a [{"text":"Check out the thousmc2 live interactive map! ","color":"gray"},{"text":"map.thousmc.xyz","color":"gold","underlined":true,"clickEvent":{"action":"open_url","value":"https://map.thousmc.xyz"},"hoverEvent":{"action":"show_text","contents":[{"text":"https://map.thousmc.xyz","color":"gray","italic":true}]}}]'
-INVITE_AD = 'tellraw @a [{"text":"Join the thousmc2 Discord server! ","color":"gray"},{"text":"discord.gg/xr6umCvj8J","color":"gold","underlined":true,"clickEvent":{"action":"open_url","value":"https://discord.gg/xr6umCvj8J"},"hoverEvent":{"action":"show_text","contents":[{"text":"https://discord.gg/xr6umCvj8J","color":"gray","italic":true}]}}]'
+
+def format_ads():
+    ads_dir = Path('ads')
+    ad_files = list(ads_dir.glob('*.json'))
+
+    formatted_ads = []
+    for i in ad_files:
+        ad = i.open()
+        loaded_ad = json.load(ad)
+        formatted_ad = json.dumps(loaded_ad, separators=(',', ':'))
+        formatted_ads.append(formatted_ad)
+    return formatted_ads
 
 def paths_create(path):
     path_expand = Path(path).expanduser()
@@ -31,17 +41,24 @@ def paths_create(path):
     else:
         return path_expand
 
-def is_invite():
-    is_invite_path = paths_create('~/.local/state/thousmc/advertise')
-    global is_invite_file  # maybe i shouldnt do this
-    is_invite_file = is_invite_path / 'is_invite.txt'
-    opened = is_invite_file.open() if (is_invite_file.is_file()) else None
-    if not is_invite_file.is_file():
-        choice = str(random.randint(0, 1))
-        is_invite_file.touch()
-        is_invite_file.write_text(choice)
-        return choice
-    return '1' in opened.read()
+def ad_decision(formatted_ads):
+    if not formatted_ads:
+        return None
+    ad_decision_path = paths_create('~/.local/state/thousmc/advertise')
+    ad_decision_file = ad_decision_path / 'ad_decision.txt'
+    current_index = 0
+    if ad_decision_file.is_file():
+        try:
+            current_index = int(ad_decision_file.read_text())
+        except ValueError:
+            current_index = 0
+    if current_index >= len(formatted_ads):
+        current_index = 0
+    next_index = current_index + 1
+    if next_index >= len(formatted_ads):
+        next_index = 0
+    ad_decision_file.write_text(str(next_index))
+    return current_index
 
 def advertisement():
     if are_players('play.thousmc.xyz', save=True) == False:
@@ -55,12 +72,12 @@ def advertisement():
     if random.random() < SECRET_MESSAGE_CHANCE:
         return 'tellraw @a [{"text":"' + random.choice(secret_message_list) + '","color":"gold"}]'
     # actual discord & map ad
-    if is_invite() == True:
-        is_invite_file.write_text('0')
-        return INVITE_AD
-    else:
-        is_invite_file.write_text('1')
-        return MAP_AD
+    all_ads = format_ads()
+    ad_index = ad_decision(all_ads)
+    if ad_index is not None:
+        chosen_ad_json = all_ads[ad_index]
+        return f'tellraw @a {chosen_ad_json}'
+    exit(1)
         
 def are_players(url, save=False):
     # thank you jamason
