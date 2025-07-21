@@ -1,0 +1,25 @@
+[
+  {
+    "text": "Check out the thousmc2 live interactive map! ",
+    "color": "gray"
+  },
+  {
+    "text": "map.thousmc.xyz",
+    "color": "gold",
+    "underlined": true,
+    "clickEvent": {
+      "action": "open_url",
+      "value": "https://map.thousmc.xyz"
+    },
+    "hoverEvent": {
+      "action": "show_text",
+      "contents": [
+        {
+          "text": "https://map.thousmc.xyz",
+          "color": "gray",
+          "italic": true
+        }
+      ]
+    }
+  }
+]
