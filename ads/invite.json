@@ -13,7 +13,7 @@
     },
     "hover_event": {
       "action": "show_text",
-      "contents": [
+      "value": [
         {
           "text": "https://discord.gg/xr6umCvj8J",
           "color": "gray",
