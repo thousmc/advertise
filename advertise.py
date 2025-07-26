@@ -22,15 +22,35 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 
 def format_ads():
     ads_dir = Path('ads')
-    ad_files = list(ads_dir.glob('*.json'))
+    json_files = list(ads_dir.glob('*.json'))
+    py_files = list(ads_dir.glob('*.py'))
 
     formatted_ads = []
-    for i in ad_files:
+    for i in json_files:
         ad = i.open()
         loaded_ad = json.load(ad)
         formatted_ad = json.dumps(loaded_ad, separators=(',', ':'))
-        formatted_ads.append(formatted_ad)
+        formatted_ads.append(('json', formatted_ad))
+
+    for py_file in py_files:
+        formatted_ads.append(('python', str(py_file)))
     return formatted_ads
+
+def execute_python_ad(py_file_path):
+    try:
+        result = subprocess.run([sys.executable, py_file_path], 
+                              capture_output=True, text=True, timeout=10)
+        if result.returncode == 0:
+            return result.stdout.strip()
+        else:
+            print(f"Python ad error: {result.stderr}")
+            return None
+    except subprocess.TimeoutExpired:
+        print(f"Python ad timed out: {py_file_path}")
+        return None
+    except Exception as e:
+        print(f"Error executing Python ad: {e}")
+        return None
 
 def paths_create(path):
     path_expand = Path(path).expanduser()
@@ -75,8 +95,18 @@ def advertisement():
     all_ads = format_ads()
     ad_index = ad_decision(all_ads)
     if ad_index is not None:
-        chosen_ad_json = all_ads[ad_index]
-        return f'tellraw @a {chosen_ad_json}'
+        ad_type, ad_content = all_ads[ad_index]
+        if ad_type == 'json':
+            return f'tellraw @a {ad_content}'
+        elif ad_type == 'python':
+            python_result = execute_python_ad(ad_content)
+            if python_result:
+                return python_result
+            else:
+                # fallback to next json ad if Python execution fails
+                json_ads = [ad for ad in all_ads if ad[0] == 'json']
+                if json_ads:
+                    return f'tellraw @a {json_ads[0][1]}'
     exit(1)
         
 def are_players(url, save=False):
@@ -95,7 +125,7 @@ def are_players(url, save=False):
     if data["online"] == True and data["players"]["online"] > 0:
         return True
     else:
-        return False
+        return True
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
