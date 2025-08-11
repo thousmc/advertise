@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 import json
 import datetime
+import sys
+
+# stop output after jan 1
+if datetime.datetime.now() >= datetime.datetime(2026, 1, 1):
+    sys.exit(0)
 
 def ordinal(n: int) -> str:
     if 10 <= (n % 100) <= 20:
@@ -40,14 +45,13 @@ else:
     prefix_text = 'Remember! '
 
 date_display = expiry_date.strftime("%B ") + ordinal(expiry_date.day) + expiry_date.strftime(", %Y")
-pre_text = f'{prefix_text}"The "play.thousmc.xyz" IP will stop working on '
+pre_text = f'{prefix_text}The "play.thousmc.xyz" IP will stop working on '
 post_text = '. Please switch to "thousmc.net" before then!'
 
 tellraw_data = [
     {
         "text": pre_text,
-        "color": "red",
-        "bold": True
+        "color": "red"
     },
     {
         "text": date_display,
@@ -62,8 +66,7 @@ tellraw_data = [
     },
     {
         "text": post_text,
-        "color": "red",
-        "bold": True
+        "color": "red"
     }
 ]
 
