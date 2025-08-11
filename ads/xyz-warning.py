@@ -47,7 +47,7 @@ tellraw_data = [
     {
         "text": pre_text,
         "color": "red",
-        "bold": true
+        "bold": True
     },
     {
         "text": date_display,
@@ -63,7 +63,7 @@ tellraw_data = [
     {
         "text": post_text,
         "color": "red",
-        "bold": true
+        "bold": True
     }
 ]
 
