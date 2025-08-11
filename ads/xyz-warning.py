@@ -1,29 +1,70 @@
 #!/usr/bin/env python3
-
 import json
 import datetime
 
-# Example: Warning about IP expiration
-expiry_date = datetime.datetime(2026, 1, 1)  # August 15, 2025
-current_date = datetime.datetime.now()
-days_until_expiry = (expiry_date - current_date).days
+def ordinal(n: int) -> str:
+    if 10 <= (n % 100) <= 20:
+        suffix = "th"
+    else:
+        suffix = {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return f"{n}{suffix}"
+
+expiry_date = datetime.datetime(2026, 1, 1)
+now = datetime.datetime.now()
+delta = expiry_date - now
+days_until_expiry = max(delta.days, 0)
+
+months = (expiry_date.year - now.year) * 12 + (expiry_date.month - now.month)
+if expiry_date.day < now.day:
+    months -= 1
+months = max(months, 0)
+
+weeks = days_until_expiry // 7
+
+if days_until_expiry <= 0:
+    hover_main = "Expired"
+elif months >= 1:
+    hover_main = f"{months} month{'s' if months != 1 else ''} left"
+elif weeks >= 1:
+    hover_main = f"{weeks} week{'s' if weeks != 1 else ''} left"
+else:
+    hover_main = f"{days_until_expiry} day{'s' if days_until_expiry != 1 else ''} left"
 
 if days_until_expiry == 1:
-    message_text = f'ATTENTION: ".xyz" thousmc domains (e.g. play.thousmc.xyz) will stop working in {days_until_expiry} day! Please switch to "thousmc.net" or "play.thousmc.net!"'
+    prefix_text = 'ATTENTION: '
 elif days_until_expiry <= 7:
-    message_text = f'WARNING: ".xyz" thousmc domains (e.g. play.thousmc.xyz) will stop working in {days_until_expiry} days! Please switch to "thousmc.net" or "play.thousmc.net!"'
+    prefix_text = 'WARNING: '
 elif days_until_expiry <= 30:
-    message_text = f'Notice: ".xyz" thousmc domains (e.g. play.thousmc.xyz) will stop working in {days_until_expiry} days! Please switch to "thousmc.net" or "play.thousmc.net!"'
+    prefix_text = 'Notice: '
 else:
-    message_text = f'Remember! ".xyz" thousmc domains (e.g. play.thousmc.xyz) will stop working in {days_until_expiry} days! Please switch to "thousmc.net" or "play.thousmc.net!"'
+    prefix_text = 'Remember! '
 
-# Generate tellraw JSON
+date_display = expiry_date.strftime("%B ") + ordinal(expiry_date.day) + expiry_date.strftime(", %Y")
+pre_text = f'{prefix_text}".xyz" thousmc domains (e.g. play.thousmc.xyz) will stop working on '
+post_text = ' Please switch to "thousmc.net" or "play.thousmc.net!"'
+
 tellraw_data = [
     {
-        "text": message_text,
+        "text": pre_text,
+        "color": "red",
+        "bold": days_until_expiry <= 7
+    },
+    {
+        "text": date_display,
+        "underlined": True,
+        "hover_event": {
+            "action": "show_text",
+            "value": [
+                {"text": hover_main, "color": "gray", "italic": True},
+                {"text": f" ({days_until_expiry} days total)", "color": "gray"}
+            ]
+        }
+    },
+    {
+        "text": post_text,
         "color": "red",
         "bold": days_until_expiry <= 7
     }
 ]
 
-print(f'tellraw @a {json.dumps(tellraw_data, separators=(",", ":"))}')
+print('/tellraw @a ' + json.dumps(tellraw_data, separators=(",", ":")))
