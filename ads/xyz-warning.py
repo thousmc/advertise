@@ -40,14 +40,14 @@ else:
     prefix_text = 'Remember! '
 
 date_display = expiry_date.strftime("%B ") + ordinal(expiry_date.day) + expiry_date.strftime(", %Y")
-pre_text = f'{prefix_text}".xyz" thousmc domains (e.g. play.thousmc.xyz) will stop working on '
-post_text = ' Please switch to "thousmc.net" or "play.thousmc.net!"'
+pre_text = f'{prefix_text}"The "play.thousmc.xyz" IP will stop working on '
+post_text = '. Please switch to "thousmc.net" before then!'
 
 tellraw_data = [
     {
         "text": pre_text,
         "color": "red",
-        "bold": days_until_expiry <= 7
+        "bold": true
     },
     {
         "text": date_display,
@@ -63,7 +63,7 @@ tellraw_data = [
     {
         "text": post_text,
         "color": "red",
-        "bold": days_until_expiry <= 7
+        "bold": true
     }
 ]
 
