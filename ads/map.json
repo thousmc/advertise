@@ -4,18 +4,18 @@
     "color": "gray"
   },
   {
-    "text": "map.thousmc.xyz",
+    "text": "map.thousmc.net",
     "color": "gold",
     "underlined": true,
     "click_event": {
       "action": "open_url",
-      "url": "https://map.thousmc.xyz"
+      "url": "https://map.thousmc.net"
     },
     "hover_event": {
       "action": "show_text",
       "value": [
         {
-          "text": "https://map.thousmc.xyz",
+          "text": "https://map.thousmc.net",
           "color": "gray",
           "italic": true
         }
