@@ -125,7 +125,7 @@ def are_players(url, save=False):
     if data["online"] == True and data["players"]["online"] > 0:
         return True
     else:
-        return True
+        return False
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
