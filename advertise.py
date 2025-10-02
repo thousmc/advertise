@@ -21,7 +21,7 @@ SECRET_MESSAGE_CHANCE = 0.04  # added for readability
 SCRIPT_DIR = Path(__file__).resolve().parent
 
 def format_ads():
-    ads_dir = Path('ads')
+    ads_dir = SCRIPT_DIR / 'ads'
     json_files = list(ads_dir.glob('*.json'))
     py_files = list(ads_dir.glob('*.py'))
 
@@ -85,11 +85,12 @@ def advertisement():
         exit(1)
     # secret message functionality
     # small chance a non-discord, non-map message occurs
-    secret_messages = open(f'{SCRIPT_DIR}/secret_messages.txt')
-    secret_message_list = []
-    for message in secret_messages:
-        secret_message_list.append(message.strip())
-    if random.random() < SECRET_MESSAGE_CHANCE:
+    try:
+        with (SCRIPT_DIR / 'secret_messages.txt').open() as secret_messages:
+            secret_message_list = [message.strip() for message in secret_messages if message.strip()]
+    except FileNotFoundError:
+        secret_message_list = []
+    if random.random() < SECRET_MESSAGE_CHANCE and secret_message_list:
         return 'tellraw @a [{"text":"' + random.choice(secret_message_list) + '","color":"gold"}]'
     # actual discord & map ad
     all_ads = format_ads()
