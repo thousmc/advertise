@@ -70,4 +70,4 @@ tellraw_data = [
     }
 ]
 
-print('/tellraw @a ' + json.dumps(tellraw_data, separators=(",", ":")))
+print('tellraw @a ' + json.dumps(tellraw_data, separators=(",", ":")))
