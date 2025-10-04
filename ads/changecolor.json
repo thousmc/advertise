@@ -1,0 +1,14 @@
+[
+  {
+    "text": "Did you know, you can use the command ",
+    "color": "gray"
+  },
+  {
+    "text": "/changecolor ",
+    "color": "gold"
+  },
+  {
+    "text": "to change the color of your messages?",
+    "color": "gray"
+  }
+]
