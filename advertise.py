@@ -17,7 +17,7 @@ import argparse
 import sys
 
 CURRENT_TIME = time.strftime('%Y-%m-%d-%H-%M-%S')
-SECRET_MESSAGE_CHANCE = 0.04  # added for readability
+SECRET_MESSAGE_CHANCE = 0.01  # added for readability
 SCRIPT_DIR = Path(__file__).resolve().parent
 
 def format_ads():
