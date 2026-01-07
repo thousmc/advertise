@@ -81,7 +81,7 @@ def ad_decision(formatted_ads):
     return current_index
 
 def advertisement():
-    if are_players('play.thousmc.xyz', save=True) == False:
+    if are_players('thousmc.net', save=True) == False:
         exit(1)
     # secret message functionality
     # small chance a non-discord, non-map message occurs
